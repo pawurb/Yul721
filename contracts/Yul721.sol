@@ -33,6 +33,10 @@ bytes4 constant erc721InterfaceId = 0x80ac58cd;
 bytes4 constant onERC721ReceivedSelector = 0x150b7a02;
 
 contract Yul721 {
+    string public name;
+    string public symbol;
+    uint256 public maxSupply;
+
     uint256 public nextId = 0;
     uint256 public totalSupply = 0;
     mapping(address => uint256) internal _balances;
@@ -59,31 +63,16 @@ contract Yul721 {
         address indexed approved,
         uint256 indexed tokenId
     );
-
     event ApprovalForAll(
         address indexed owner,
         address indexed operator,
         bool approved
     );
 
-    function name() public pure returns (string memory) {
-        assembly {
-            let memptr := mload(0x40)
-            mstore(memptr, 0x20)
-            mstore(add(memptr, 0x20), nameLength)
-            mstore(add(memptr, 0x40), nameData)
-            return(memptr, 0x60)
-        }
-    }
-
-    function symbol() public pure returns (string memory) {
-        assembly {
-            let memptr := mload(0x40)
-            mstore(memptr, 0x20)
-            mstore(add(memptr, 0x20), symbolLength)
-            mstore(add(memptr, 0x40), symbolData)
-            return(memptr, 0x60)
-        }
+    constructor(string memory _name, string memory _symbol, uint256 _maxSupply) {
+      name = _name;
+      symbol = _symbol;
+      maxSupply = _maxSupply;
     }
 
     function supportsInterface(bytes4 interfaceId) public view returns (bool) {

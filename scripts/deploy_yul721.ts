@@ -9,7 +9,7 @@ async function main() {
     process.exit(0)
   }
 
-  const yul = await ethers.deployContract("Yul721");
+  const yul = await ethers.deployContract("Yul721", ["Yul721", "YUL", 1024]);
   await yul.waitForDeployment()
 
   console.log(

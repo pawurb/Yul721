@@ -29,7 +29,10 @@ describe("Yul721 NFT", () => {
     user2 = (await ethers.getSigners())[1];
     user3 = (await ethers.getSigners())[2];
     const Yul721 = await ethers.getContractFactory("Yul721");
-    yul = await Yul721.deploy();
+    let name = opts.name || "Yul721"
+    let symbol = opts.symbol || "YUL"
+    let maxSupply = opts.maxSupply || 1024
+    yul = await Yul721.deploy(name, symbol, maxSupply);
     const MockNFTHolder = await ethers.getContractFactory("MockNFTHolder");
     const MockNFTBuggyHolder = await ethers.getContractFactory(
       "MockNFTBuggyHolder"
@@ -49,10 +52,17 @@ describe("Yul721 NFT", () => {
     await setup({});
   });
 
-  it("can be deployed and has correct attributes", async () => {
-    assert.ok(yul.target);
-    expect(await yul.name()).to.eq("Yul 721");
-    expect(await yul.symbol()).to.eq("YUL");
+  describe("Constructor", async () => {
+    beforeEach(async () => {
+      await setup({ name: "Yul721", symbol: "YUL", maxSupply: 512 });
+    });
+
+    it("can be deployed and has correct attributes", async () => {
+      assert.ok(yul.target);
+      expect(await yul.name()).to.eq("Yul721");
+      expect(await yul.symbol()).to.eq("YUL");
+      expect(await yul.maxSupply()).to.eq(512);
+    });
   });
 
   describe("'balanceOf'", async () => {
