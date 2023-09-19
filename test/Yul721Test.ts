@@ -16,7 +16,7 @@ const TOKEN_ID = 0;
 
 describe("Yul721 NFT", () => {
   let yul;
-  let ozNFT
+  let ozNFT;
   let user1;
   let user2;
   let user3;
@@ -37,9 +37,9 @@ describe("Yul721 NFT", () => {
     const MockNFTNonHolder = await ethers.getContractFactory(
       "MockNFTNonHolder"
     );
-      const MockERC721A = await ethers.getContractFactory("MockERC721A")
+    const MockERC721A = await ethers.getContractFactory("MockERC721A");
 
-    ozNFT = await MockERC721A.deploy()
+    ozNFT = await MockERC721A.deploy();
     nftHolder = await MockNFTHolder.deploy();
     nftBuggyHolder = await MockNFTBuggyHolder.deploy();
     nftNonHolder = await MockNFTNonHolder.deploy();
@@ -664,18 +664,18 @@ describe("Yul721 NFT", () => {
     });
   });
 
-  describe.only("'supportsInterface'", async () => {
+  describe("'supportsInterface'", async () => {
     it("returns for supported interfaces", async () => {
-      let result1 = await yul.supportsInterface("0x01ffc9a7")
-      expect(result1).to.equal(true)
+      let result1 = await yul.supportsInterface("0x01ffc9a7");
+      expect(result1).to.equal(true);
 
-      let result2 = await yul.supportsInterface("0x80ac58cd")
-      expect(result2).to.equal(true)
+      let result2 = await yul.supportsInterface("0x80ac58cd");
+      expect(result2).to.equal(true);
     });
 
-    it("returns false for not supported interfaces", async () => {
-      let result = await yul.supportsInterface('0x12121212')
-      expect(result).to.equal(false)
+    it("returns false for non supported interfaces", async () => {
+      let result = await yul.supportsInterface("0x12121212");
+      expect(result).to.equal(false);
     });
   });
 

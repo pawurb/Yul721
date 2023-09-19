@@ -2,57 +2,6 @@
 
 pragma solidity 0.8.17;
 
-interface IERC721 {
-    event Transfer(
-        address indexed from,
-        address indexed to,
-        uint256 indexed tokenId
-    );
-    event Approval(
-        address indexed owner,
-        address indexed approved,
-        uint256 indexed tokenId
-    );
-
-    event ApprovalForAll(
-        address indexed owner,
-        address indexed operator,
-        bool approved
-    );
-
-    function balanceOf(address owner) external view returns (uint256 balance);
-
-    function ownerOf(uint256 tokenId) external view returns (address owner);
-
-    function safeTransferFrom(
-        address from,
-        address to,
-        uint256 tokenId,
-        bytes calldata data
-    ) external;
-
-    function safeTransferFrom(
-        address from,
-        address to,
-        uint256 tokenId
-    ) external;
-
-    function transferFrom(address from, address to, uint256 tokenId) external;
-
-    function approve(address to, uint256 tokenId) external;
-
-    function setApprovalForAll(address operator, bool approved) external;
-
-    function getApproved(
-        uint256 tokenId
-    ) external view returns (address operator);
-
-    function isApprovedForAll(
-        address owner,
-        address operator
-    ) external view returns (bool);
-}
-
 bytes32 constant nameLength = 0x0000000000000000000000000000000000000000000000000000000000000007;
 bytes32 constant nameData = 0x59756c2037323100000000000000000000000000000000000000000000000000;
 
@@ -83,7 +32,7 @@ bytes4 constant erc721InterfaceId = 0x80ac58cd;
 // bytes4(keccak256("onERC721Received(address,address,uint256,bytes"))
 bytes4 constant onERC721ReceivedSelector = 0x150b7a02;
 
-contract Yul721 is IERC721 {
+contract Yul721 {
     uint256 public nextId = 0;
     uint256 public totalSupply = 0;
     mapping(address => uint256) internal _balances;
@@ -99,6 +48,23 @@ contract Yul721 is IERC721 {
     error ERC721AccessDenied();
     error ERC721InvalidAddress(address receiver);
     error ERC721MintLimit();
+
+    event Transfer(
+        address indexed from,
+        address indexed to,
+        uint256 indexed tokenId
+    );
+    event Approval(
+        address indexed owner,
+        address indexed approved,
+        uint256 indexed tokenId
+    );
+
+    event ApprovalForAll(
+        address indexed owner,
+        address indexed operator,
+        bool approved
+    );
 
     function name() public pure returns (string memory) {
         assembly {
@@ -121,20 +87,20 @@ contract Yul721 is IERC721 {
     }
 
     function supportsInterface(bytes4 interfaceId) public view returns (bool) {
-      assembly {
-        if eq(interfaceId, erc165InterfaceId) {
-          mstore(0x00, 1)
-          return(0x00, 0x20)
-        }
+        assembly {
+            if eq(interfaceId, erc165InterfaceId) {
+                mstore(0x00, 1)
+                return(0x00, 0x20)
+            }
 
-        if eq(interfaceId, erc721InterfaceId) {
-          mstore(0x00, 1)
-          return(0x00, 0x20)
-        }
+            if eq(interfaceId, erc721InterfaceId) {
+                mstore(0x00, 1)
+                return(0x00, 0x20)
+            }
 
-        mstore(0x00, 0)
-        return(0x00, 0x20)
-      }
+            mstore(0x00, 0)
+            return(0x00, 0x20)
+        }
     }
 
     function balanceOf(address _account) public view returns (uint256) {
