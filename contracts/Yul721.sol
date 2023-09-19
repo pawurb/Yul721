@@ -76,7 +76,9 @@ contract Yul721 {
         maxSupply = _maxSupply;
     }
 
-    function supportsInterface(bytes4 interfaceId) public view returns (bool) {
+    function supportsInterface(
+        bytes4 interfaceId
+    ) external view returns (bool) {
         assembly {
             if eq(interfaceId, erc165InterfaceId) {
                 mstore(0x00, 1)
@@ -93,7 +95,7 @@ contract Yul721 {
         }
     }
 
-    function balanceOf(address _account) public view returns (uint256) {
+    function balanceOf(address _account) external view returns (uint256) {
         assembly {
             if eq(_account, 0) {
                 mstore(0x00, invalidAddressSelector)
@@ -310,7 +312,7 @@ contract Yul721 {
         address _to,
         uint256 _tokenId,
         bytes calldata
-    ) public {
+    ) external {
         assembly {
             if eq(_to, 0) {
                 mstore(0x00, invalidReceiverSelector)
@@ -390,7 +392,7 @@ contract Yul721 {
         address _from,
         address _to,
         uint256 _tokenId
-    ) public {
+    ) external {
         assembly {
             if eq(_to, 0) {
                 mstore(0x00, invalidReceiverSelector)
