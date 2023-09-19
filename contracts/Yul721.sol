@@ -77,6 +77,9 @@ bytes32 constant approvalEventHash = 0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f
 // `keccak256("ApprovalForAll(address,address,bool)")`
 bytes32 constant approvalForAllEventHash = 0x17307eab39ab6107e8899845ad3d59bd9653f200f220920489ca2b5937696c31;
 
+bytes4 constant erc165InterfaceId = 0x01ffc9a7;
+bytes4 constant erc721InterfaceId = 0x80ac58cd;
+
 // bytes4(keccak256("onERC721Received(address,address,uint256,bytes"))
 bytes4 constant onERC721ReceivedSelector = 0x150b7a02;
 
@@ -115,6 +118,23 @@ contract Yul721 is IERC721 {
             mstore(add(memptr, 0x40), symbolData)
             return(memptr, 0x60)
         }
+    }
+
+    function supportsInterface(bytes4 interfaceId) public view returns (bool) {
+      assembly {
+        if eq(interfaceId, erc165InterfaceId) {
+          mstore(0x00, 1)
+          return(0x00, 0x20)
+        }
+
+        if eq(interfaceId, erc721InterfaceId) {
+          mstore(0x00, 1)
+          return(0x00, 0x20)
+        }
+
+        mstore(0x00, 0)
+        return(0x00, 0x20)
+      }
     }
 
     function balanceOf(address _account) public view returns (uint256) {

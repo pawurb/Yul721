@@ -664,6 +664,21 @@ describe("Yul721 NFT", () => {
     });
   });
 
+  describe.only("'supportsInterface'", async () => {
+    it("returns for supported interfaces", async () => {
+      let result1 = await yul.supportsInterface("0x01ffc9a7")
+      expect(result1).to.equal(true)
+
+      let result2 = await yul.supportsInterface("0x80ac58cd")
+      expect(result2).to.equal(true)
+    });
+
+    it("returns false for not supported interfaces", async () => {
+      let result = await yul.supportsInterface('0x12121212')
+      expect(result).to.equal(false)
+    });
+  });
+
   describe("edge cases", async () => {
     beforeEach(async () => {
       await yul.connect(user2).mint();
