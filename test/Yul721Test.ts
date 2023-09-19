@@ -16,6 +16,7 @@ const TOKEN_ID = 0;
 
 describe("Yul721 NFT", () => {
   let yul;
+  let ozNFT
   let user1;
   let user2;
   let user3;
@@ -36,6 +37,9 @@ describe("Yul721 NFT", () => {
     const MockNFTNonHolder = await ethers.getContractFactory(
       "MockNFTNonHolder"
     );
+      const MockERC721A = await ethers.getContractFactory("MockERC721A")
+
+    ozNFT = await MockERC721A.deploy()
     nftHolder = await MockNFTHolder.deploy();
     nftBuggyHolder = await MockNFTBuggyHolder.deploy();
     nftNonHolder = await MockNFTNonHolder.deploy();
