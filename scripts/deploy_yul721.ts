@@ -9,9 +9,7 @@ async function main() {
     process.exit(0)
   }
 
-  const admin = (await ethers.getSigners())[0];
-
-  const yul = await ethers.deployContract("Yul721", [admin.address]);
+  const yul = await ethers.deployContract("Yul721");
   await yul.waitForDeployment()
 
   console.log(

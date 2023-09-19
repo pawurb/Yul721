@@ -67,6 +67,8 @@ bytes32 constant invalidReceiverSelector = 0x64a0ae92000000000000000000000000000
 bytes32 constant accessDeniedSelector = 0x43df7c0200000000000000000000000000000000000000000000000000000000;
 // `bytes4(keccak256("ERC721InvalidAddress(address)"))`
 bytes32 constant invalidAddressSelector = 0x46cce84100000000000000000000000000000000000000000000000000000000;
+// `bytes4(keccak256("ERC721MintLimit()"))`
+bytes32 constant mintLimitSelector = 0x3ca6616800000000000000000000000000000000000000000000000000000000;
 
 // `keccak256("Transfer(address,address,uint256)")`
 bytes32 constant transferEventHash = 0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef;
@@ -79,12 +81,12 @@ bytes32 constant approvalForAllEventHash = 0x17307eab39ab6107e8899845ad3d59bd965
 bytes4 constant onERC721ReceivedSelector = 0x150b7a02;
 
 contract Yul721 is IERC721 {
-    address public admin;
     uint256 public nextId = 0;
     uint256 public totalSupply = 0;
     mapping(address => uint256) internal _balances;
     mapping(uint256 => address) private _owners;
     mapping(uint256 => address) private _tokenApprovals;
+    mapping(address => uint256) private _mintCount;
 
     // keccak256(operator, keccak256(owner, slot))
     mapping(address => mapping(address => bool)) private _operatorApprovals;
@@ -93,12 +95,7 @@ contract Yul721 is IERC721 {
     error ERC721InvalidReceiver(address receiver);
     error ERC721AccessDenied();
     error ERC721InvalidAddress(address receiver);
-
-    constructor(address _admin) {
-        assembly {
-            sstore(admin.slot, _admin)
-        }
-    }
+    error ERC721MintLimit();
 
     function name() public pure returns (string memory) {
         assembly {
@@ -150,14 +147,22 @@ contract Yul721 is IERC721 {
         }
     }
 
-    function mint(address _to) external {
+    function mint() external {
         assembly {
             let memptr := mload(0x40)
 
-            if iszero(eq(sload(admin.slot), caller())) {
-                mstore(0x00, accessDeniedSelector)
+            mstore(memptr, caller())
+            mstore(add(memptr, 0x20), caller())
+            let mintCountHash := keccak256(memptr, 0x40)
+
+            let mintCount := sload(mintCountHash)
+            if gt(mintCount, 1) {
+                mstore(0x00, mintLimitSelector)
                 revert(0x00, 0x04)
             }
+
+            // increment _mintCount
+            sstore(mintCountHash, add(mintCount, 1))
 
             // increment nextId
             let nextIdVal := sload(nextId.slot)
@@ -169,52 +174,16 @@ contract Yul721 is IERC721 {
             // update _owners
             mstore(memptr, nextIdVal)
             mstore(add(memptr, 0x20), _owners.slot)
-            sstore(keccak256(memptr, 0x40), _to)
+            sstore(keccak256(memptr, 0x40), caller())
 
             // update _balances
-            mstore(memptr, _to)
+            mstore(memptr, caller())
             mstore(add(memptr, 0x20), _balances.slot)
             let balanceHash := keccak256(memptr, 0x40)
             sstore(balanceHash, add(sload(balanceHash), 1))
 
             // emit Transfer
-            log4(0, 0, transferEventHash, 0, _to, nextIdVal)
-        }
-    }
-
-    function burn(uint256 _tokenId) external {
-        assembly {
-            if iszero(eq(sload(admin.slot), caller())) {
-                mstore(0x00, accessDeniedSelector)
-                revert(0x00, 0x04)
-            }
-
-            let memptr := mload(0x40)
-            mstore(memptr, _tokenId)
-            mstore(add(memptr, 0x20), _owners.slot)
-            let ownerHash := keccak256(memptr, 0x40)
-            let owner := sload(ownerHash)
-
-            if eq(owner, 0) {
-                mstore(0x00, nonexistentTokenSelector)
-                mstore(0x04, _tokenId)
-                revert(0x00, 0x24)
-            }
-
-            // update _owners
-            sstore(ownerHash, 0)
-
-            // decrement totalSupply
-            sstore(totalSupply.slot, sub(sload(totalSupply.slot), 1))
-
-            // update _balances
-            mstore(memptr, owner)
-            mstore(add(memptr, 0x20), _balances.slot)
-            let balancesHash := keccak256(memptr, 0x40)
-            sstore(balancesHash, sub(sload(balancesHash), 1))
-
-            // emit Transfer
-            log4(0, 0, transferEventHash, owner, 0, _tokenId)
+            log4(0, 0, transferEventHash, 0, caller(), nextIdVal)
         }
     }
 
