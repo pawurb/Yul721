@@ -18,6 +18,8 @@ bytes32 constant accessDeniedSelector = 0x43df7c02000000000000000000000000000000
 bytes32 constant invalidAddressSelector = 0x46cce84100000000000000000000000000000000000000000000000000000000;
 // `bytes4(keccak256("ERC721MintLimit()"))`
 bytes32 constant mintLimitSelector = 0x3ca6616800000000000000000000000000000000000000000000000000000000;
+// `bytes4(keccak256("ERC721MaxSupplyLimit()"))`
+bytes32 constant maxSupplyLimitSelector = 0x96c2a07600000000000000000000000000000000000000000000000000000000;
 
 // `keccak256("Transfer(address,address,uint256)")`
 bytes32 constant transferEventHash = 0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef;
@@ -52,6 +54,7 @@ contract Yul721 {
     error ERC721AccessDenied();
     error ERC721InvalidAddress(address receiver);
     error ERC721MintLimit();
+    error ERC721MaxSupplyLimit();
 
     event Transfer(
         address indexed from,
@@ -69,10 +72,14 @@ contract Yul721 {
         bool approved
     );
 
-    constructor(string memory _name, string memory _symbol, uint256 _maxSupply) {
-      name = _name;
-      symbol = _symbol;
-      maxSupply = _maxSupply;
+    constructor(
+        string memory _name,
+        string memory _symbol,
+        uint256 _maxSupply
+    ) {
+        name = _name;
+        symbol = _symbol;
+        maxSupply = _maxSupply;
     }
 
     function supportsInterface(bytes4 interfaceId) public view returns (bool) {
@@ -125,6 +132,12 @@ contract Yul721 {
     function mint() external {
         assembly {
             let memptr := mload(0x40)
+
+            // check maxSupply
+            if eq(sload(totalSupply.slot), sload(maxSupply.slot)) {
+                mstore(0x00, maxSupplyLimitSelector)
+                revert(0x00, 0x04)
+            }
 
             mstore(memptr, caller())
             mstore(add(memptr, 0x20), caller())

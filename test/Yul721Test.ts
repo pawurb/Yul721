@@ -29,9 +29,9 @@ describe("Yul721 NFT", () => {
     user2 = (await ethers.getSigners())[1];
     user3 = (await ethers.getSigners())[2];
     const Yul721 = await ethers.getContractFactory("Yul721");
-    let name = opts.name || "Yul721"
-    let symbol = opts.symbol || "YUL"
-    let maxSupply = opts.maxSupply || 1024
+    let name = opts.name || "Yul721";
+    let symbol = opts.symbol || "YUL";
+    let maxSupply = opts.maxSupply || 1024;
     yul = await Yul721.deploy(name, symbol, maxSupply);
     const MockNFTHolder = await ethers.getContractFactory("MockNFTHolder");
     const MockNFTBuggyHolder = await ethers.getContractFactory(
@@ -62,6 +62,19 @@ describe("Yul721 NFT", () => {
       expect(await yul.name()).to.eq("Yul721");
       expect(await yul.symbol()).to.eq("YUL");
       expect(await yul.maxSupply()).to.eq(512);
+    });
+  });
+
+  describe("'maxSupply'", async () => {
+    beforeEach(async () => {
+      await setup({ maxSupply: 2 });
+    });
+
+    it("does not allow mint that exceeds maxSupply", async () => {
+      await yul.connect(user2).mint();
+      await yul.connect(user2).mint();
+
+      await expectRevert(yul.connect(user3).mint(), "ERC721MaxSupplyLimit()");
     });
   });
 
