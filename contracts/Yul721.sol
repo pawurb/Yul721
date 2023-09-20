@@ -32,9 +32,7 @@ contract Yul721 {
     string public name;
     string public symbol;
     uint256 public maxSupply;
-
     uint256 public nextId = 0;
-    uint256 public totalSupply = 0;
     mapping(address => uint256) internal _balances;
     mapping(uint256 => address) private _owners;
     mapping(uint256 => address) private _tokenApprovals;
@@ -95,6 +93,13 @@ contract Yul721 {
         }
     }
 
+    function totalSupply() external view returns (uint256) {
+        assembly {
+            mstore(0x00, sload(nextId.slot))
+            return(0x00, 0x20)
+        }
+    }
+
     function balanceOf(address _account) external view returns (uint256) {
         assembly {
             if eq(_account, 0) {
@@ -130,7 +135,7 @@ contract Yul721 {
             let memptr := mload(0x40)
 
             // check maxSupply
-            if eq(sload(totalSupply.slot), sload(maxSupply.slot)) {
+            if eq(sload(nextId.slot), sload(maxSupply.slot)) {
                 mstore(0x00, maxSupplyLimitSelector)
                 revert(0x00, 0x04)
             }
@@ -151,9 +156,6 @@ contract Yul721 {
             // increment nextId
             let nextIdVal := sload(nextId.slot)
             sstore(nextId.slot, add(nextIdVal, 1))
-
-            // increment totalSupply
-            sstore(totalSupply.slot, add(sload(totalSupply.slot), 1))
 
             // update _owners
             mstore(memptr, nextIdVal)
