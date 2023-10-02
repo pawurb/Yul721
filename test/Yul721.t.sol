@@ -3,9 +3,9 @@ pragma solidity 0.8.21;
 
 import {Test, console2} from "forge-std/Test.sol";
 import {Yul721} from "../src/Yul721.sol";
-import {MockNFTNonHolder} from "../src/MockNFTNonHolder.sol";
-import {MockNFTHolder} from "../src/MockNFTHolder.sol";
-import {MockNFTBuggyHolder} from "../src/MockNFTBuggyHolder.sol";
+import {MockNFTNonHolder} from "../src/test/MockNFTNonHolder.sol";
+import {MockNFTHolder} from "../src/test/MockNFTHolder.sol";
+import {MockNFTBuggyHolder} from "../src/test/MockNFTBuggyHolder.sol";
 
 uint256 constant TOKEN_ID = 0;
 address constant user2 = address(1);
