@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.8.17;
+pragma solidity 0.8.21;
 
 // `bytes4(keccak256("ERC721NonexistentToken(uint256)"))`
 bytes32 constant nonexistentTokenSelector = 0x7e27328900000000000000000000000000000000000000000000000000000000;
@@ -48,35 +48,17 @@ contract Yul721 {
     error ERC721MintLimit();
     error ERC721MaxSupplyLimit();
 
-    event Transfer(
-        address indexed from,
-        address indexed to,
-        uint256 indexed tokenId
-    );
-    event Approval(
-        address indexed owner,
-        address indexed approved,
-        uint256 indexed tokenId
-    );
-    event ApprovalForAll(
-        address indexed owner,
-        address indexed operator,
-        bool approved
-    );
+    event Transfer(address indexed from, address indexed to, uint256 indexed tokenId);
+    event Approval(address indexed owner, address indexed approved, uint256 indexed tokenId);
+    event ApprovalForAll(address indexed owner, address indexed operator, bool approved);
 
-    constructor(
-        string memory _name,
-        string memory _symbol,
-        uint256 _maxSupply
-    ) {
+    constructor(string memory _name, string memory _symbol, uint256 _maxSupply) {
         name = _name;
         symbol = _symbol;
         maxSupply = _maxSupply;
     }
 
-    function supportsInterface(
-        bytes4 interfaceId
-    ) external view returns (bool) {
+    function supportsInterface(bytes4 interfaceId) external view returns (bool) {
         assembly {
             if eq(interfaceId, erc165InterfaceId) {
                 mstore(0x00, 1)
@@ -231,10 +213,7 @@ contract Yul721 {
         }
     }
 
-    function isApprovedForAll(
-        address _owner,
-        address _operator
-    ) external view returns (bool) {
+    function isApprovedForAll(address _owner, address _operator) external view returns (bool) {
         assembly {
             let memptr := mload(0x40)
 
@@ -248,11 +227,7 @@ contract Yul721 {
         }
     }
 
-    function transferFrom(
-        address _from,
-        address _to,
-        uint256 _tokenId
-    ) external {
+    function transferFrom(address _from, address _to, uint256 _tokenId) external {
         assembly {
             if eq(_to, 0) {
                 mstore(0x00, invalidReceiverSelector)
@@ -309,12 +284,7 @@ contract Yul721 {
         }
     }
 
-    function safeTransferFrom(
-        address _from,
-        address _to,
-        uint256 _tokenId,
-        bytes calldata
-    ) external {
+    function safeTransferFrom(address _from, address _to, uint256 _tokenId, bytes calldata) external {
         assembly {
             if eq(_to, 0) {
                 mstore(0x00, invalidReceiverSelector)
@@ -390,11 +360,7 @@ contract Yul721 {
         }
     }
 
-    function safeTransferFrom(
-        address _from,
-        address _to,
-        uint256 _tokenId
-    ) external {
+    function safeTransferFrom(address _from, address _to, uint256 _tokenId) external {
         assembly {
             if eq(_to, 0) {
                 mstore(0x00, invalidReceiverSelector)
