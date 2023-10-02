@@ -1,6 +1,8 @@
-name: test
-
-on: workflow_dispatch
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 env:
   FOUNDRY_PROFILE: ci
@@ -21,6 +23,10 @@ jobs:
         uses: foundry-rs/foundry-toolchain@v1
         with:
           version: nightly
+
+      - name: Install node_modules
+        run: |
+          npm i
 
       - name: Run Forge build
         run: |

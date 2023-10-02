@@ -1,4 +1,4 @@
-# Yul721
+# Yul721 [![GH Actions](https://github.com/pawurb/Yul721/actions/workflows/test.yml/badge.svg)](https://github.com/pawurb/Yul721/actions)
 
 `Yul721` is an implementation of the ERC-721 standard for non-fungible tokens (NFTs) in the [Yul inline assembly language](https://docs.soliditylang.org/en/v0.8.21/yul.html).
 
