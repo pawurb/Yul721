@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.8.21;
+pragma solidity ^0.8.0;
 
 // `bytes4(keccak256("ERC721NonexistentToken(uint256)"))`
 bytes32 constant nonexistentTokenSelector = 0x7e27328900000000000000000000000000000000000000000000000000000000;
@@ -26,9 +26,9 @@ bytes4 constant erc165InterfaceId = 0x01ffc9a7;
 bytes4 constant erc721InterfaceId = 0x80ac58cd;
 
 // bytes4(keccak256("onERC721Received(address,address,uint256,bytes"))
-bytes4 constant onERC721ReceivedSelector = 0x150b7a02;
+bytes32 constant onERC721ReceivedSelector = 0x150b7a0200000000000000000000000000000000000000000000000000000000;
 
-contract Yul721 {
+contract YulSol721 {
     string public name;
     string public symbol;
     uint256 public maxSupply;
@@ -122,6 +122,7 @@ contract Yul721 {
                 revert(0x00, 0x04)
             }
 
+            // check mintLimit
             mstore(memptr, caller())
             mstore(add(memptr, 0x20), _mintCount.slot)
             let mintCountHash := keccak256(memptr, 0x40)
@@ -286,12 +287,15 @@ contract Yul721 {
 
     function safeTransferFrom(address _from, address _to, uint256 _tokenId, bytes calldata) external {
         assembly {
+            // cannot transfer to zero address
+
             if eq(_to, 0) {
                 mstore(0x00, invalidReceiverSelector)
                 mstore(0x04, _to)
                 revert(0x00, 0x24)
             }
 
+            // check callback
             let memptr := mload(0x40)
             mstore(0x00, onERC721ReceivedSelector)
             mstore(add(0x00, 0x04), caller())
