@@ -123,7 +123,7 @@ contract Yul721 {
             }
 
             mstore(memptr, caller())
-            mstore(add(memptr, 0x20), caller())
+            mstore(add(memptr, 0x20), _mintCount.slot)
             let mintCountHash := keccak256(memptr, 0x40)
 
             let mintCount := sload(mintCountHash)
