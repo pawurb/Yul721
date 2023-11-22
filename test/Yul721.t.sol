@@ -279,6 +279,17 @@ contract MintTest is BaseTest {
         assertEq(totalSupplyAfter, 1);
     }
 
+    // has working maxSupply limit
+    function test_maxSupply() public {
+        for (uint256 i = 0; i < 1024; i++) {
+            vm.prank(address(uint160(i)));
+            yul.mint();
+        }
+
+        vm.expectRevert(Yul721.ERC721MaxSupplyLimit.selector);
+        yul.mint();
+    }
+
     // emits a correct event
     function test_emitEvent() public {
         vm.expectEmit(true, true, false, true);
