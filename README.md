@@ -1,10 +1,11 @@
 # Yul721 [![GH Actions](https://github.com/pawurb/Yul721/actions/workflows/test.yml/badge.svg)](https://github.com/pawurb/Yul721/actions)
 
-`Yul721` is an implementation of the ERC-721 standard for non-fungible tokens (NFTs) in the [Yul inline assembly language](https://docs.soliditylang.org/en/v0.8.21/yul.html).
+`Yul721.yul` is an implementation of the ERC-721 standard for non-fungible tokens (NFTs) in the [Yul inline assembly language](https://docs.soliditylang.org/en/v0.8.19/yul.html).
+
+Etherscan does not validate Smart Contracts written in pure Yul. If you want to verify this contract on Etherscan you can use `YulSol721.sol` which uses Solidity for declaring methods interface.
 
 I've created this project for learning purposes, and it has not been audited for security.
 
-Unfortunately, Etherscan does not validate Smart Contracts written in pure Yul (like the [official ERC20 example](https://docs.soliditylang.org/en/v0.8.21/yul.html#complete-erc20-example)). That's why methods interface is declared in a Solidity syntax.
 
 ## API
 
