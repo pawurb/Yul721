@@ -5,7 +5,8 @@ import {Test, console2} from "forge-std/Test.sol";
 import {MockNFTNonHolder} from "../src/test/MockNFTNonHolder.sol";
 import {MockNFTHolder} from "../src/test/MockNFTHolder.sol";
 import {MockNFTBuggyHolder} from "../src/test/MockNFTBuggyHolder.sol";
-import "../src/lib/YulDeployer.sol";
+// import "../src/lib/YulDeployer.sol";
+import "../src/lib/BytecodeDeployer.sol";
 
 uint256 constant TOKEN_ID = 0;
 address constant user2 = address(1);
@@ -44,7 +45,8 @@ contract BaseTest is Test {
     event Approval(address indexed owner, address indexed approved, uint256 indexed tokenId);
     event ApprovalForAll(address indexed owner, address indexed operator, bool approved);
 
-    YulDeployer yulDeployer = new YulDeployer();
+    // YulDeployer yulDeployer = new YulDeployer();
+    BytecodeDeployer bytecodeDeployer = new BytecodeDeployer();
     Yul721 yul;
     address me;
     address nftNonHolder;
@@ -52,7 +54,7 @@ contract BaseTest is Test {
     address nftBuggyHolder;
 
     function setUp() public virtual {
-        yul = Yul721(yulDeployer.deployContract("Yul721"));
+        yul = Yul721(bytecodeDeployer.deployContract("Yul721"));
         me = address(this);
         nftNonHolder = address(new MockNFTNonHolder());
         nftHolder = address(new MockNFTHolder());
