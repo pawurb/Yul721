@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 object "Token" {
     code {
         sstore(0, 1024) // maxSupplySlot()
