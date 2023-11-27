@@ -29,8 +29,6 @@ bytes4 constant erc721InterfaceId = 0x80ac58cd;
 bytes32 constant onERC721ReceivedSelector = 0x150b7a0200000000000000000000000000000000000000000000000000000000;
 
 contract YulSol721 {
-    string public name;
-    string public symbol;
     uint256 public maxSupply;
     uint256 public nextId = 0;
     mapping(address => uint256) internal _balances;
@@ -52,10 +50,16 @@ contract YulSol721 {
     event Approval(address indexed owner, address indexed approved, uint256 indexed tokenId);
     event ApprovalForAll(address indexed owner, address indexed operator, bool approved);
 
-    constructor(string memory _name, string memory _symbol, uint256 _maxSupply) {
-        name = _name;
-        symbol = _symbol;
-        maxSupply = _maxSupply;
+    constructor() {
+        maxSupply = 1024;
+    }
+
+    function name() external returns (string memory) {
+        return "Yul 721";
+    }
+
+    function symbol() external returns (string memory) {
+        return "YUL";
     }
 
     function supportsInterface(bytes4 interfaceId) external view returns (bool) {

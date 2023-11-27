@@ -24,7 +24,7 @@ contract BaseTest is Test {
     address nftBuggyHolder;
 
     function setUp() public virtual {
-        yul = new YulSol721("Yul 721", "YUL", 1024);
+        yul = new YulSol721();
         me = address(this);
         nftNonHolder = address(new MockNFTNonHolder());
         nftHolder = address(new MockNFTHolder());
@@ -38,19 +38,6 @@ contract ConstructorTest is BaseTest {
         assertEq(yul.symbol(), "YUL");
         assertEq(yul.name(), "Yul 721");
         assertEq(yul.maxSupply(), 1024);
-    }
-}
-
-contract MaxSupplyTest is BaseTest {
-    function setUp() public override {
-        yul = new YulSol721("Yul 721", "YUL", 1);
-    }
-
-    // does not allow mint that exceeds maxSupply
-    function test_maxSupply() public {
-        yul.mint();
-        vm.expectRevert(YulSol721.ERC721MaxSupplyLimit.selector);
-        yul.mint();
     }
 }
 
