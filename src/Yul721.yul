@@ -99,7 +99,7 @@ object "Token" {
 
                 emitTransfer(0, caller(), nextIdVal)
             }
-            case 0x6352211e /* "ownerOf(unit256)" */ {
+            case 0x6352211e /* "ownerOf(uint256)" */ {
                 mstore(0x0, calldataload(0x04))
                 mstore(0x20, ownersSlot())
                 mstore(0x00, sload(keccak256(0x0, 0x40)))
