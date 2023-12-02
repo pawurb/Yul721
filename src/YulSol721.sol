@@ -302,9 +302,9 @@ contract YulSol721 {
             // check callback
             let memptr := mload(0x40)
             mstore(0x00, onERC721ReceivedSelector)
-            mstore(add(0x00, 0x04), caller())
-            mstore(add(0x14, 0x10), caller())
-            mstore(add(0x34, 0x10), _tokenId)
+            mstore(0x04, caller())
+            mstore(0x24, calldataload(0x04))
+            mstore(0x44, _tokenId)
             calldatacopy(0x70, 0x70, 0x20)
 
             if iszero(eq(extcodesize(_to), 0)) {
@@ -378,9 +378,9 @@ contract YulSol721 {
 
             let memptr := mload(0x40)
             mstore(0x00, onERC721ReceivedSelector)
-            mstore(add(0x00, 0x04), caller())
-            mstore(add(0x14, 0x10), caller())
-            mstore(add(0x34, 0x10), _tokenId)
+            mstore(0x04, caller())
+            mstore(0x24, calldataload(0x04))
+            mstore(0x44, _tokenId)
             mstore(0x64, 0x80)
 
             if iszero(eq(extcodesize(_to), 0)) {
