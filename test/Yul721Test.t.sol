@@ -459,6 +459,7 @@ contract SetApprovalForAllTest is BaseTest {
 
         yul.setApprovalForAll(user2, true);
 
+        vm.prank(user2);
         yul.transferFrom(me, user2, TOKEN_ID);
         assertEq(yul.balanceOf(user2), 1);
 
@@ -477,6 +478,7 @@ contract SetApprovalForAllTest is BaseTest {
 
         yul.setApprovalForAll(user2, true);
 
+        vm.prank(user2);
         yul.safeTransferFrom(me, user2, TOKEN_ID);
         assertEq(yul.balanceOf(user2), 1);
 
@@ -495,6 +497,7 @@ contract SetApprovalForAllTest is BaseTest {
 
         yul.setApprovalForAll(user2, true);
 
+        vm.prank(user2);
         yul.safeTransferFrom(me, user2, TOKEN_ID, "");
         assertEq(yul.balanceOf(user2), 1);
 
