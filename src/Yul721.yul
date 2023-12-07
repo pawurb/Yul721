@@ -354,7 +354,7 @@ object "Token" {
 
             function requireNonZeroAddress(to) {
               if eq(to, 0) {
-                  mstore(0x00, invalidReceiverSelector())
+                  mstore(0x00, invalidAddressSelector())
                   mstore(0x04, to)
                   revert(0x00, 0x24)
               }
@@ -389,6 +389,11 @@ object "Token" {
             function invalidReceiverSelector() -> s {
               // `bytes4(keccak256("ERC721InvalidReceiver(address)"))`
               s := 0x64a0ae9200000000000000000000000000000000000000000000000000000000
+            }
+
+            function invalidAddressSelector() -> s {
+              // `bytes4(keccak256("ERC721InvalidAddress(address)"))`
+              s := 0x46cce84100000000000000000000000000000000000000000000000000000000
             }
         }
     }
